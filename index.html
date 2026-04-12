@@ -1,18 +1,20 @@
-<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-
   <!-- ONNX Runtime -->
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+
+  <!-- Your JavaScript file (kept separate) -->
+  <script src="index.js" defer></script>
 
   <style>
     table, th, td { border: 1px solid; }
 
+    /* Top row boxes (keep your originals) */
     #leftbox { float:left; width:35%; height:300px; }
     #middlebox{ float:left; width:25%; height:300px; }
     #rightbox{ float:left; width:25%; height:300px; }
 
+    /* Make top Synthetic button box align + match style */
     #syntheticButton{
       float:left;
       width:25%;
@@ -22,20 +24,21 @@
       padding:10px;
     }
 
+    /* Original bottom synthetic (kept but overridden below) */
     #syntheticbox{
       float:right;
       width:33%;
       height:300px;
-      border:1px solid red;
-      padding:10px;
+      border:red;
     }
 
     h1{ color:green; text-align:center; }
 
-    #boxes1:after, #boxes2:after, #boxes3:after { 
-      content:""; display:block; clear:both; 
-    }
+    /* Clearfixes */
+    #boxes1:after { content:""; display:block; clear:both; }
+    #boxes2:after { content:""; display:block; clear:both; }
 
+    /* Bottom row: force all four on one line */
     #boxes2 #leftbox,
     #boxes2 #middlebox,
     #boxes2 #rightbox,
@@ -56,6 +59,9 @@
       box-sizing:border-box;
     }
 
+    #syntheticbox { border:1px solid red; padding:10px; }
+
+    /* Top row: 4-column grid */
     #boxes1 #leftbox { width:25%; }
     #boxes1 #middlebox { width:25%; }
     #boxes1 #syntheticButton { width:25%; margin-left:25%; }
@@ -69,9 +75,8 @@
 </head>
 
 <body>
-  <h1>Inverse (resNet, Real: 4x7, Synth: 8x7, GenReal:F1F2)</h1>
+  <h1>Inverse (resNet, Real: 4x7, Synth: 8x7, GenReal:F1F2) - Real(1000), Synthetic(12600), RealGen (12000)</h1>
 
-  <!-- YOUR ORIGINAL UI (unchanged) -->
   <div id="boxes1">
     <div id="leftbox">
       <h2>From</h2>
@@ -179,83 +184,6 @@
     </div>
   </div>
 
-  <!-- =============================== -->
-  <!--  ONNX MODEL + FUNCTIONS ADDED   -->
-  <!-- =============================== -->
-  <script>
-    let session = null;
-
-    async function loadModel() {
-      try {
-        session = await ort.InferenceSession.create('./Dlnet2026_Data.onnx');
-        console.log("Model loaded");
-      } catch (err) {
-        console.error(err);
-        alert("Model failed to load. Check filename + file size.");
-      }
-    }
-
-    loadModel();
-
-    async function runModel(arr) {
-      const tensor = new ort.Tensor('float32', Float32Array.from(arr), [1, arr.length]);
-      const feeds = { input: tensor };
-      const results = await session.run(feeds);
-      const outputName = Object.keys(results)[0];
-      return Array.from(results[outputName].data);
-    }
-
-    async function runExample1() {
-      const arr = [
-        parseFloat(box0c1.value),
-        parseFloat(box1c1.value),
-        parseFloat(box2c1.value),
-        parseFloat(box3c1.value)
-      ];
-      predictions1.innerHTML = JSON.stringify(await runModel(arr));
-    }
-
-    async function runExample2() {
-      const arr = [
-        parseFloat(box0c2.value),
-        parseFloat(box1c2.value),
-        parseFloat(box2c2.value),
-        parseFloat(box3c2.value)
-      ];
-      predictions2.innerHTML = JSON.stringify(await runModel(arr));
-    }
-
-    async function runExampleSynthetic() {
-      predSynthetic.innerHTML = JSON.stringify(await runModel([1,2,3,4]));
-    }
-
-    async function runExampleRealGenHong() {
-      predSyntheticHW.innerHTML = JSON.stringify(await runModel([5,6,7,8]));
-    }
-
-    async function runExampleLEforward() {
-      const arr = [
-        parseFloat(LEbox0c1.value),
-        parseFloat(LEbox1c1.value),
-        parseFloat(LEbox2c1.value),
-        parseFloat(LEbox3c1.value),
-        parseFloat(LEbox4c1.value),
-        parseFloat(LEbox5c1.value),
-        parseFloat(LEbox6c1.value)
-      ];
-      predictionsLEforward.innerHTML = JSON.stringify(await runModel(arr));
-    }
-
-    async function runExampleLEinverse() {
-      const arr = [
-        parseFloat(LEbox0c2.value),
-        parseFloat(LEbox1c2.value),
-        parseFloat(LEbox2c2.value),
-        parseFloat(LEbox3c2.value)
-      ];
-      predictionsLEinverse.innerHTML = JSON.stringify(await runModel(arr));
-    }
-  </script>
-
 </body>
 </html>
+
