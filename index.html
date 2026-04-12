@@ -2,20 +2,260 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ONNX Model Test</title>
 
-  <!-- ONNX Runtime Web -->
+  <!-- ONNX Runtime -->
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
 
+  <style>
+    table, th, td { border: 1px solid; }
+
+    #leftbox { float:left; width:35%; height:300px; }
+    #middlebox{ float:left; width:25%; height:300px; }
+    #rightbox{ float:left; width:25%; height:300px; }
+
+    #syntheticButton{
+      float:left;
+      width:25%;
+      height:300px;
+      box-sizing:border-box;
+      border:1px solid red;
+      padding:10px;
+    }
+
+    #syntheticbox{
+      float:right;
+      width:33%;
+      height:300px;
+      border:1px solid red;
+      padding:10px;
+    }
+
+    h1{ color:green; text-align:center; }
+
+    #boxes1:after, #boxes2:after, #boxes3:after { 
+      content:""; display:block; clear:both; 
+    }
+
+    #boxes2 #leftbox,
+    #boxes2 #middlebox,
+    #boxes2 #rightbox,
+    #boxes2 #syntheticbox {
+      float:left;
+      width:25%;
+      height:300px;
+      box-sizing:border-box;
+    }
+
+    #boxes3 #leftboxHW,
+    #boxes3 #middleboxHW,
+    #boxes3 #rightboxHW,
+    #boxes3 #syntheticboxHW {
+      float:left;
+      width:25%;
+      height:300px;
+      box-sizing:border-box;
+    }
+
+    #boxes1 #leftbox { width:25%; }
+    #boxes1 #middlebox { width:25%; }
+    #boxes1 #syntheticButton { width:25%; margin-left:25%; }
+
+    #syntheticbox > div {
+      float: left;
+      width: 50%;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
+
 <body>
+  <h1>Inverse (resNet, Real: 4x7, Synth: 8x7, GenReal:F1F2)</h1>
 
-  <h2>ONNX Model Test</h2>
+  <!-- YOUR ORIGINAL UI (unchanged) -->
+  <div id="boxes1">
+    <div id="leftbox">
+      <h2>From</h2>
+      <input type="text" id="box0c1" value="1800">Raceway flame temp <br/>
+      <input type="text" id="box1c1" value="1700"> Hot metal temp <br/>
+      <input type="text" id="box2c1" value="70"> Top gas temp <br/>
+      <input type="text" id="box3c1" value="2000"> production rate <br/>
+      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExample1()"/></div>
+    </div>
 
-  <button id="run-btn">Run Model</button>
+    <div id="middlebox">
+      <h2>To</h2>
+      <input type="text" id="box0c2" value="2200"> Raceway flame temp<br/>
+      <input type="text" id="box1c2" value="1800"> Hot metal temp <br/>
+      <input type="text" id="box2c2" value="120">  Top gas temp <br/>
+      <input type="text" id="box3c2" value="4000"> production rate <br/>
+      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExample2()"/></div>
+    </div>
 
-  <pre id="output"></pre>
+    <div id="syntheticButton">
+      <h2>Synthetic</h2>
+      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExampleSynthetic()"/></div>
 
-  <script src="script.js"></script>
+      <h2>Real Gen</h2>
+      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExampleRealGenHong()"/></div>
+    </div>
+  </div>
+
+  <div id="boxes2">
+    <div id="leftbox">
+      <h2>From Inference</h2>
+      <div id="predictions1"></div>
+    </div>
+
+    <div id="middlebox">
+      <h2>To Inference</h2>
+      <div id="predictions2"></div>
+    </div>
+
+    <div id="rightbox">
+      <h2>Average</h2>
+      <div id="difference"></div>
+    </div>
+
+    <div id="syntheticbox">
+      <h2>Synthetic</h2>
+      <div id="predSynthetic"></div>
+    </div>
+  </div>
+
+  <div id="boxes3">
+    <div id="leftboxHW">
+      <h2>From Inference</h2>
+      <div id="predictionsHW1"></div>
+    </div>
+
+    <div id="middleboxHW">
+      <h2>To Inference</h2>
+      <div id="predictionsHW2"></div>
+    </div>
+
+    <div id="rightboxHW">
+      <h2>Average</h2>
+      <div id="differenceHW"></div>
+    </div>
+
+    <div id="syntheticboxHW">
+      <h2>Gen Real Row</h2>
+      <div id="predSyntheticHW"></div>
+    </div>
+  </div>
+
+  <div id="boxes4">
+    <div id="leftbox">
+      <h2>Forward</h2>
+      <input type="text" id="LEbox0c1" value="1800">h2i <br/>
+      <input type="text" id="LEbox1c1" value="1700"> pci rate<br/>
+      <input type="text" id="LEbox2c1" value="70"> ngi rate <br/>
+      <input type="text" id="LEbox3c1" value="2000"> o2 vol fract<br/>
+      <input type="text" id="LEbox4c1" value="1700"> h2 temp <br/>
+      <input type="text" id="LEbox5c1" value="70"> hb temp <br/>
+      <input type="text" id="LEbox6c1" value="2000"> wind rate<br/>
+      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExampleLEforward()"/></div>
+    </div>
+
+    <div id="middlebox">
+      <h2>Inverse</h2>
+      <input type="text" id="LEbox0c2" value="2200"> tgt <br/>
+      <input type="text" id="LEbox1c2" value="1800"> hmt <br/>
+      <input type="text" id="LEbox2c2" value="120"> prod rate <br/>
+      <input type="text" id="LEbox3c2" value="4000"> fta <br/>
+      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExampleLEinverse()"/></div>
+    </div>
+  </div>
+
+  <div id="boxes5">
+    <div id="leftboxHW">
+      <h2>Forward</h2>
+      <div id="predictionsLEforward"></div>
+    </div>
+
+    <div id="middleboxHW">
+      <h2>Inverse</h2>
+      <div id="predictionsLEinverse"></div>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!--  ONNX MODEL + FUNCTIONS ADDED   -->
+  <!-- =============================== -->
+  <script>
+    let session = null;
+
+    async function loadModel() {
+      try {
+        session = await ort.InferenceSession.create('./Dlnet2026_Data.onnx');
+        console.log("Model loaded");
+      } catch (err) {
+        console.error(err);
+        alert("Model failed to load. Check filename + file size.");
+      }
+    }
+
+    loadModel();
+
+    async function runModel(arr) {
+      const tensor = new ort.Tensor('float32', Float32Array.from(arr), [1, arr.length]);
+      const feeds = { input: tensor };
+      const results = await session.run(feeds);
+      const outputName = Object.keys(results)[0];
+      return Array.from(results[outputName].data);
+    }
+
+    async function runExample1() {
+      const arr = [
+        parseFloat(box0c1.value),
+        parseFloat(box1c1.value),
+        parseFloat(box2c1.value),
+        parseFloat(box3c1.value)
+      ];
+      predictions1.innerHTML = JSON.stringify(await runModel(arr));
+    }
+
+    async function runExample2() {
+      const arr = [
+        parseFloat(box0c2.value),
+        parseFloat(box1c2.value),
+        parseFloat(box2c2.value),
+        parseFloat(box3c2.value)
+      ];
+      predictions2.innerHTML = JSON.stringify(await runModel(arr));
+    }
+
+    async function runExampleSynthetic() {
+      predSynthetic.innerHTML = JSON.stringify(await runModel([1,2,3,4]));
+    }
+
+    async function runExampleRealGenHong() {
+      predSyntheticHW.innerHTML = JSON.stringify(await runModel([5,6,7,8]));
+    }
+
+    async function runExampleLEforward() {
+      const arr = [
+        parseFloat(LEbox0c1.value),
+        parseFloat(LEbox1c1.value),
+        parseFloat(LEbox2c1.value),
+        parseFloat(LEbox3c1.value),
+        parseFloat(LEbox4c1.value),
+        parseFloat(LEbox5c1.value),
+        parseFloat(LEbox6c1.value)
+      ];
+      predictionsLEforward.innerHTML = JSON.stringify(await runModel(arr));
+    }
+
+    async function runExampleLEinverse() {
+      const arr = [
+        parseFloat(LEbox0c2.value),
+        parseFloat(LEbox1c2.value),
+        parseFloat(LEbox2c2.value),
+        parseFloat(LEbox3c2.value)
+      ];
+      predictionsLEinverse.innerHTML = JSON.stringify(await runModel(arr));
+    }
+  </script>
+
 </body>
 </html>
