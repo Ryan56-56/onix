@@ -7,13 +7,12 @@ async function loadAndRunModel() {
   try {
     outputEl.textContent = 'Loading model...';
 
-    // 1. Create ONNX Runtime session
-    const session = await ort.InferenceSession.create('./model.onnx', {
+    // Load your actual ONNX model
+    const session = await ort.InferenceSession.create('./DLnet2026_WineData.onnx', {
       executionProviders: ['wasm']
     });
 
-    // 2. Build dummy input (change name/shape to match your model)
-    // Example: float32 tensor with shape [1, 3]
+    // Example dummy input — update shape to match your model
     const inputData = new Float32Array([0.1, 0.2, 0.3]);
     const tensor = new ort.Tensor('float32', inputData, [1, 3]);
 
@@ -22,10 +21,8 @@ async function loadAndRunModel() {
 
     outputEl.textContent = 'Running inference...';
 
-    // 3. Run inference
     const results = await session.run(feeds);
 
-    // 4. Inspect outputs (use your real output name)
     const outputNames = Object.keys(results);
     const firstOutputName = outputNames[0];
     const outputTensor = results[firstOutputName];
@@ -33,6 +30,7 @@ async function loadAndRunModel() {
     outputEl.textContent =
       'Output name: ' + firstOutputName + '\n' +
       'Data: ' + JSON.stringify(Array.from(outputTensor.data), null, 2);
+
   } catch (err) {
     console.error(err);
     outputEl.textContent = 'Error: ' + err.message;
@@ -40,3 +38,5 @@ async function loadAndRunModel() {
 }
 
 runBtn.addEventListener('click', loadAndRunModel);
+
+
