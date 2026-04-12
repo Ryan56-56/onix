@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ONNX Model Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- ONNX Runtime Web CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    .container { max-width: 600px; margin: auto; }
+    button { padding: 0.5rem 1rem; margin-top: 1rem; }
+    pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ONNX Model Demo</h1>
+    <p>Click the button to run a test inference with your ONNX model.</p>
+
+    <button id="run-btn">Run Inference</button>
+
+    <h2>Output</h2>
+    <pre id="output">Waiting...</pre>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
