@@ -1,238 +1,79 @@
 <html>
 <head>
-  <!-- ONNX Runtime -->
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
-
-  <!-- Your JavaScript file (kept separate) -->
   <script src="index.js" defer></script>
 
   <style>
-    table, th, td { border: 1px solid; }
-
-    /* Top row boxes (keep your originals) */
-    #leftbox { float:left; width:35%; height:300px; }
-    #middlebox{ float:left; width:25%; height:300px; }
-    #rightbox{ float:left; width:25%; height:300px; }
-
-    /* Make top Synthetic button box align + match style */
-    #syntheticButton{
-      float:left;
-      width:25%;
-      height:300px;
-      box-sizing:border-box;
-      border:1px solid red;
-      padding:10px;
+    body {
+      font-family: Arial;
+      margin: 20px;
     }
-
-    /* Original bottom synthetic (kept but overridden below) */
-    #syntheticbox{
-      float:right;
-      width:33%;
-      height:300px;
-      border:red;
+    table td {
+      padding: 4px 10px;
     }
-
-    h1{ color:green; text-align:center; }
-
-    /* Clearfixes */
-    #boxes1:after { content:""; display:block; clear:both; }
-    #boxes2:after { content:""; display:block; clear:both; }
-
-    /* Bottom row: force all four on one line */
-    #boxes2 #leftbox,
-    #boxes2 #middlebox,
-    #boxes2 #rightbox,
-    #boxes2 #syntheticbox {
-      float:left;
-      width:25%;
-      height:300px;
-      box-sizing:border-box;
+    input {
+      width: 120px;
     }
-
-    #boxes3 #leftboxHW,
-    #boxes3 #middleboxHW,
-    #boxes3 #rightboxHW,
-    #boxes3 #syntheticboxHW {
-      float:left;
-      width:25%;
-      height:300px;
-      box-sizing:border-box;
-    }
-
-    #syntheticbox { border:1px solid red; padding:10px; }
-
-    /* Top row: 4-column grid */
-    #boxes1 #leftbox { width:25%; }
-    #boxes1 #middlebox { width:25%; }
-    #boxes1 #syntheticButton { width:25%; margin-left:25%; }
-
-    #syntheticbox > div {
-      float: left;
-      width: 50%;
-      box-sizing: border-box;
+    #studentBox {
+      border: 2px solid #444;
+      padding: 20px;
+      margin-top: 20px;
     }
   </style>
 </head>
 
 <body>
-  <h1>Inverse (resNet, Real: 4x7, Synth: 8x7, GenReal:F1F2) - Real(1000), Synthetic(12600), RealGen (12000)</h1>
 
-  <div id="boxes1">
-    <div id="leftbox">
-      <h2>From</h2>
-      <input type="text" id="box0c1" value="1800">Raceway flame temp <br/>
-      <input type="text" id="box1c1" value="1700"> Hot metal temp <br/>
-      <input type="text" id="box2c1" value="70"> Top gas temp <br/>
-      <input type="text" id="box3c1" value="2000"> production rate <br/>
-      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExample1()"/></div>
-    </div>
+  <h1>Student Dropout Prediction Model</h1>
 
-    <div id="middlebox">
-      <h2>To</h2>
-      <input type="text" id="box0c2" value="2200"> Raceway flame temp<br/>
-      <input type="text" id="box1c2" value="1800"> Hot metal temp <br/>
-      <input type="text" id="box2c2" value="120">  Top gas temp <br/>
-      <input type="text" id="box3c2" value="4000"> production rate <br/>
-      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExample2()"/></div>
-    </div>
+  <div id="studentBox">
+    <p>Enter student features below:</p>
 
-    <div id="syntheticButton">
-      <h2>Synthetic</h2>
-      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExampleSynthetic()"/></div>
+    <table>
+      <tr><td>Marital status</td><td><input id="marital_status"></td></tr>
+      <tr><td>Application mode</td><td><input id="application_mode"></td></tr>
+      <tr><td>Application order</td><td><input id="application_order"></td></tr>
+      <tr><td>Course</td><td><input id="course"></td></tr>
+      <tr><td>Daytime/evening attendance</td><td><input id="attendance"></td></tr>
+      <tr><td>Previous qualification</td><td><input id="prev_qual"></td></tr>
+      <tr><td>Previous qualification (grade)</td><td><input id="prev_qual_grade"></td></tr>
+      <tr><td>Nacionality</td><td><input id="nacionality"></td></tr>
+      <tr><td>Mother's qualification</td><td><input id="mother_qual"></td></tr>
+      <tr><td>Father's qualification</td><td><input id="father_qual"></td></tr>
+      <tr><td>Mother's occupation</td><td><input id="mother_occ"></td></tr>
+      <tr><td>Father's occupation</td><td><input id="father_occ"></td></tr>
+      <tr><td>Admission grade</td><td><input id="admission_grade"></td></tr>
+      <tr><td>Displaced</td><td><input id="displaced"></td></tr>
+      <tr><td>Educational special needs</td><td><input id="special_needs"></td></tr>
+      <tr><td>Debtor</td><td><input id="debtor"></td></tr>
+      <tr><td>Tuition fees up to date</td><td><input id="tuition_up_to_date"></td></tr>
+      <tr><td>Gender</td><td><input id="gender"></td></tr>
+      <tr><td>Scholarship holder</td><td><input id="scholarship"></td></tr>
+      <tr><td>Age at enrollment</td><td><input id="age"></td></tr>
+      <tr><td>International</td><td><input id="international"></td></tr>
+      <tr><td>Curricular units 1st sem (credited)</td><td><input id="c1_credited"></td></tr>
+      <tr><td>Curricular units 1st sem (enrolled)</td><td><input id="c1_enrolled"></td></tr>
+      <tr><td>Curricular units 1st sem (evaluations)</td><td><input id="c1_evaluations"></td></tr>
+      <tr><td>Curricular units 1st sem (approved)</td><td><input id="c1_approved"></td></tr>
+      <tr><td>Curricular units 1st sem (grade)</td><td><input id="c1_grade"></td></tr>
+      <tr><td>Curricular units 1st sem (without evaluations)</td><td><input id="c1_without_eval"></td></tr>
+      <tr><td>Curricular units 2nd sem (credited)</td><td><input id="c2_credited"></td></tr>
+      <tr><td>Curricular units 2nd sem (enrolled)</td><td><input id="c2_enrolled"></td></tr>
+      <tr><td>Curricular units 2nd sem (evaluations)</td><td><input id="c2_evaluations"></td></tr>
+      <tr><td>Curricular units 2nd sem (approved)</td><td><input id="c2_approved"></td></tr>
+      <tr><td>Curricular units 2nd sem (grade)</td><td><input id="c2_grade"></td></tr>
+      <tr><td>Curricular units 2nd sem (without evaluations)</td><td><input id="c2_without_eval"></td></tr>
+      <tr><td>Unemployment rate</td><td><input id="unemployment"></td></tr>
+      <tr><td>Inflation rate</td><td><input id="inflation"></td></tr>
+      <tr><td>GDP</td><td><input id="gdp"></td></tr>
+    </table>
 
-      <h2>Real Gen</h2>
-      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExampleRealGenHong()"/></div>
-    </div>
+    <br>
+    <button style="background:yellow; padding:10px;" onclick="runModel()">Run Student Model</button>
+
+    <h3>Prediction Output:</h3>
+    <div id="result" style="font-size:20px; color:blue;"></div>
   </div>
-
-  <div id="boxes2">
-    <div id="leftbox">
-      <h2>From Inference</h2>
-      <div id="predictions1"></div>
-    </div>
-
-    <div id="middlebox">
-      <h2>To Inference</h2>
-      <div id="predictions2"></div>
-    </div>
-
-    <div id="rightbox">
-      <h2>Average</h2>
-      <div id="difference"></div>
-    </div>
-
-    <div id="syntheticbox">
-      <h2>Synthetic</h2>
-      <div id="predSynthetic"></div>
-    </div>
-  </div>
-
-  <div id="boxes3">
-    <div id="leftboxHW">
-      <h2>From Inference</h2>
-      <div id="predictionsHW1"></div>
-    </div>
-
-    <div id="middleboxHW">
-      <h2>To Inference</h2>
-      <div id="predictionsHW2"></div>
-    </div>
-
-    <div id="rightboxHW">
-      <h2>Average</h2>
-      <div id="differenceHW"></div>
-    </div>
-
-    <div id="syntheticboxHW">
-      <h2>Gen Real Row</h2>
-      <div id="predSyntheticHW"></div>
-    </div>
-  </div>
-
-  <div id="boxes4">
-    <div id="leftbox">
-      <h2>Forward</h2>
-      <input type="text" id="LEbox0c1" value="1800">h2i <br/>
-      <input type="text" id="LEbox1c1" value="1700"> pci rate<br/>
-      <input type="text" id="LEbox2c1" value="70"> ngi rate <br/>
-      <input type="text" id="LEbox3c1" value="2000"> o2 vol fract<br/>
-      <input type="text" id="LEbox4c1" value="1700"> h2 temp <br/>
-      <input type="text" id="LEbox5c1" value="70"> hb temp <br/>
-      <input type="text" id="LEbox6c1" value="2000"> wind rate<br/>
-      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExampleLEforward()"/></div>
-    </div>
-
-    <div id="middlebox">
-      <h2>Inverse</h2>
-      <input type="text" id="LEbox0c2" value="2200"> tgt <br/>
-      <input type="text" id="LEbox1c2" value="1800"> hmt <br/>
-      <input type="text" id="LEbox2c2" value="120"> prod rate <br/>
-      <input type="text" id="LEbox3c2" value="4000"> fta <br/>
-      <div><input style="background-color:yellow" type="button" value="Run" onclick="runExampleLEinverse()"/></div>
-    </div>
-  </div>
-
-  <div id="boxes5">
-    <div id="leftboxHW">
-      <h2>Forward</h2>
-      <div id="predictionsLEforward"></div>
-    </div>
-
-    <div id="middleboxHW">
-      <h2>Inverse</h2>
-      <div id="predictionsLEinverse"></div>
-    </div>
-  </div>
-<div id="studentBox" style="margin-top:40px; border:2px solid #444; padding:20px;">
-  <h2>Student Dropout Prediction Model</h2>
-
-  <p>Enter student features below:</p>
-
-  <table>
-    <tr><td>Marital status</td><td><input id="marital_status"></td></tr>
-    <tr><td>Application mode</td><td><input id="application_mode"></td></tr>
-    <tr><td>Application order</td><td><input id="application_order"></td></tr>
-    <tr><td>Course</td><td><input id="course"></td></tr>
-    <tr><td>Daytime/evening attendance</td><td><input id="attendance"></td></tr>
-    <tr><td>Previous qualification</td><td><input id="prev_qual"></td></tr>
-    <tr><td>Previous qualification (grade)</td><td><input id="prev_qual_grade"></td></tr>
-    <tr><td>Nacionality</td><td><input id="nacionality"></td></tr>
-    <tr><td>Mother's qualification</td><td><input id="mother_qual"></td></tr>
-    <tr><td>Father's qualification</td><td><input id="father_qual"></td></tr>
-    <tr><td>Mother's occupation</td><td><input id="mother_occ"></td></tr>
-    <tr><td>Father's occupation</td><td><input id="father_occ"></td></tr>
-    <tr><td>Admission grade</td><td><input id="admission_grade"></td></tr>
-    <tr><td>Displaced</td><td><input id="displaced"></td></tr>
-    <tr><td>Educational special needs</td><td><input id="special_needs"></td></tr>
-    <tr><td>Debtor</td><td><input id="debtor"></td></tr>
-    <tr><td>Tuition fees up to date</td><td><input id="tuition_up_to_date"></td></tr>
-    <tr><td>Gender</td><td><input id="gender"></td></tr>
-    <tr><td>Scholarship holder</td><td><input id="scholarship"></td></tr>
-    <tr><td>Age at enrollment</td><td><input id="age"></td></tr>
-    <tr><td>International</td><td><input id="international"></td></tr>
-    <tr><td>Curricular units 1st sem (credited)</td><td><input id="c1_credited"></td></tr>
-    <tr><td>Curricular units 1st sem (enrolled)</td><td><input id="c1_enrolled"></td></tr>
-    <tr><td>Curricular units 1st sem (evaluations)</td><td><input id="c1_evaluations"></td></tr>
-    <tr><td>Curricular units 1st sem (approved)</td><td><input id="c1_approved"></td></tr>
-    <tr><td>Curricular units 1st sem (grade)</td><td><input id="c1_grade"></td></tr>
-    <tr><td>Curricular units 1st sem (without evaluations)</td><td><input id="c1_without_eval"></td></tr>
-    <tr><td>Curricular units 2nd sem (credited)</td><td><input id="c2_credited"></td></tr>
-    <tr><td>Curricular units 2nd sem (enrolled)</td><td><input id="c2_enrolled"></td></tr>
-    <tr><td>Curricular units 2nd sem (evaluations)</td><td><input id="c2_evaluations"></td></tr>
-    <tr><td>Curricular units 2nd sem (approved)</td><td><input id="c2_approved"></td></tr>
-    <tr><td>Curricular units 2nd sem (grade)</td><td><input id="c2_grade"></td></tr>
-    <tr><td>Curricular units 2nd sem (without evaluations)</td><td><input id="c2_without_eval"></td></tr>
-    <tr><td>Unemployment rate</td><td><input id="unemployment"></td></tr>
-    <tr><td>Inflation rate</td><td><input id="inflation"></td></tr>
-    <tr><td>GDP</td><td><input id="gdp"></td></tr>
-  </table>
-
-  <br>
-  <button style="background:yellow; padding:10px;" onclick="runModel()">Run Student Model</button>
-
-  <h3>Prediction Output:</h3>
-  <div id="result" style="font-size:20px; color:blue;"></div>
-</div>
 
 </body>
 </html>
