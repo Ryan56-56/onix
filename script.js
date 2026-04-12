@@ -7,8 +7,8 @@ async function loadAndRunModel() {
   try {
     outputEl.textContent = 'Loading model...';
 
-    // Load your actual ONNX model
-    const session = await ort.InferenceSession.create('./DLnet2026_WineData.onnx', {
+    // Load your actual ONNX model (correct filename)
+    const session = await ort.InferenceSession.create('./Dlnet2026_WineData.onnx', {
       executionProviders: ['wasm']
     });
 
@@ -38,5 +38,6 @@ async function loadAndRunModel() {
 }
 
 runBtn.addEventListener('click', loadAndRunModel);
+
 
 
