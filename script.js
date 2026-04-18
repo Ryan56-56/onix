@@ -39,8 +39,7 @@ const FEATURE_IDS = [
   "curricular_units_2nd_sem_without_evaluations",
   "unemployment_rate",
   "inflation_rate",
-  "gdp",
-  "target"
+  "gdp"
 ];
 
 // Load ONNX model
