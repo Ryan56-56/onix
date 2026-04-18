@@ -11,6 +11,20 @@ async function loadModel() {
   } catch (err) {
     console.error("Model load error:", err);
   }
+
+  // ===============================
+  // ⭐ NEW: Missing ID Diagnostic
+  // Runs AFTER model load
+  // ===============================
+  console.log("Checking for missing HTML IDs...");
+
+  FEATURE_IDS.forEach(id => {
+    if (!document.getElementById(id)) {
+      console.error("❌ MISSING ID IN HTML:", id);
+    }
+  });
+
+  console.log("ID check complete.");
 }
 
 loadModel();
@@ -56,27 +70,9 @@ const FEATURE_IDS = [
   "unemployment_rate",
   "inflation_rate",
   "gdp"
-  // ⭐ Fake target added here
-  "target"
+  // ❌ REMOVE THIS — it breaks your model
+  // "target"
 ];
-
-
-// ===============================
-// DIAGNOSTIC CHECK — FIND MISSING IDs
-// ===============================
-function checkMissingIDs() {
-  console.log("Checking for missing HTML IDs...");
-
-  FEATURE_IDS.forEach(id => {
-    if (!document.getElementById(id)) {
-      console.error("❌ MISSING ID IN HTML:", id);
-    }
-  });
-
-  console.log("ID check complete.");
-}
-
-window.onload = checkMissingIDs;
 
 
 // ===============================
@@ -140,3 +136,4 @@ async function runModel() {
     document.getElementById("result").innerText = "Error running model.";
   }
 }
+
