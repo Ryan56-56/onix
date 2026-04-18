@@ -125,6 +125,32 @@ async function runModel() {
     const results = await session.run(feeds);
 
     const outputName = session.outputNames[0];
+    let raw = results[outputName].data;
+
+    // UNIVERSAL FIX: extract number from ANY shape
+    let prediction = Number(
+      Array.isArray(raw) ? raw[0] :
+      raw?.[0] ??
+      raw
+    );
+
+    print("Raw prediction value: " + prediction);
+
+    // Show numeric prediction (safe)
+    document.getElementById("result").innerText = isNaN(prediction)
+      ? "N/A"
+      : prediction.toFixed(4);
+
+    // Convert to label
+    const label = mapPredictionToLabel(prediction);
+    document.getElementById("result_label").innerText = label;
+
+    print("Predicted Label: " + label);
+
+  } catch (err) {
+    print("Error running model: " + err);
+  }
+}
 
     // FIX: ensure prediction is a number
     let prediction = Number(results[outputName].data[0]);
