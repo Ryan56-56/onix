@@ -4,7 +4,7 @@
 let session = null;
 
 async function loadModel() {
-  console.log("Loading model...");
+  console.log("Attempting to load model...");
   try {
     session = await ort.InferenceSession.create("./model.onnx");
     console.log("Model loaded successfully.");
@@ -60,6 +60,24 @@ const FEATURE_IDS = [
 
 
 // ===============================
+// DIAGNOSTIC CHECK — FIND MISSING IDs
+// ===============================
+function checkMissingIDs() {
+  console.log("Checking for missing HTML IDs...");
+
+  FEATURE_IDS.forEach(id => {
+    if (!document.getElementById(id)) {
+      console.error("❌ MISSING ID IN HTML:", id);
+    }
+  });
+
+  console.log("ID check complete.");
+}
+
+window.onload = checkMissingIDs;
+
+
+// ===============================
 // Collect Inputs
 // ===============================
 function collectModelInput() {
@@ -69,7 +87,7 @@ function collectModelInput() {
     const el = document.getElementById(id);
 
     if (!el) {
-      console.error("Missing HTML element for ID:", id);
+      console.error("❌ ERROR: Missing HTML element for ID:", id);
       values.push(0);
       return;
     }
@@ -120,4 +138,3 @@ async function runModel() {
     document.getElementById("result").innerText = "Error running model.";
   }
 }
-
