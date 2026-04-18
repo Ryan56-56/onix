@@ -1,11 +1,10 @@
-// ======================================================
+// ===============================
 // Load ONNX Model
-// ======================================================
+// ===============================
 let session = null;
 
 async function loadModel() {
-  console.log("Attempting to load model...");
-
+  console.log("Loading model...");
   try {
     session = await ort.InferenceSession.create("./model.onnx");
     console.log("Model loaded successfully.");
@@ -17,90 +16,89 @@ async function loadModel() {
 loadModel();
 
 
-// ======================================================
-// Feature Order (MUST match ONNX training order)
-// ======================================================
-const FEATURE_HEADERS = [
-  'Marital status',
-  'Application mode',
-  'Application order',
-  'Course',
-  'Daytime/evening attendance',
-  'Previous qualification',
-  'Previous qualification (grade)',
-  'Nacionality',
-  "Mother's qualification",
-  "Father's qualification",
-  "Mother's occupation",
-  "Father's occupation",
-  'Admission grade',
-  'Displaced',
-  'Educational special needs',
-  'Debtor',
-  'Tuition fees up to date',
-  'Gender',
-  'Scholarship holder',
-  'Age at enrollment',
-  'International',
-  'Curricular units 1st sem (credited)',
-  'Curricular units 1st sem (enrolled)',
-  'Curricular units 1st sem (evaluations)',
-  'Curricular units 1st sem (approved)',
-  'Curricular units 1st sem (grade)',
-  'Curricular units 1st sem (without evaluations)',
-  'Curricular units 2nd sem (credited)',
-  'Curricular units 2nd sem (enrolled)',
-  'Curricular units 2nd sem (evaluations)',
-  'Curricular units 2nd sem (approved)',
-  'Curricular units 2nd sem (grade)',
-  'Curricular units 2nd sem (without evaluations)',
-  'Unemployment rate',
-  'Inflation rate',
-  'GDP'
+// ===============================
+// Explicit Feature → HTML ID Mapping
+// ===============================
+const FEATURE_IDS = [
+  "marital_status",
+  "application_mode",
+  "application_order",
+  "course",
+  "daytime_evening_attendance",
+  "previous_qualification",
+  "previous_qualification_grade",
+  "nacionality",
+  "mother_s_qualification",
+  "father_s_qualification",
+  "mother_s_occupation",
+  "father_s_occupation",
+  "admission_grade",
+  "displaced",
+  "educational_special_needs",
+  "debtor",
+  "tuition_fees_up_to_date",
+  "gender",
+  "scholarship_holder",
+  "age_at_enrollment",
+  "international",
+  "curricular_units_1st_sem_credited",
+  "curricular_units_1st_sem_enrolled",
+  "curricular_units_1st_sem_evaluations",
+  "curricular_units_1st_sem_approved",
+  "curricular_units_1st_sem_grade",
+  "curricular_units_1st_sem_without_evaluations",
+  "curricular_units_2nd_sem_credited",
+  "curricular_units_2nd_sem_enrolled",
+  "curricular_units_2nd_sem_evaluations",
+  "curricular_units_2nd_sem_approved",
+  "curricular_units_2nd_sem_grade",
+  "curricular_units_2nd_sem_without_evaluations",
+  "unemployment_rate",
+  "inflation_rate",
+  "gdp"
 ];
 
 
-// ======================================================
-// Collect Inputs From HTML
-// ======================================================
+// ===============================
+// Collect Inputs
+// ===============================
 function collectModelInput() {
-  const values = {};
+  const values = [];
 
-  FEATURE_HEADERS.forEach(header => {
-    const id = header
-      .toLowerCase()
-      .replace(/[\s()']/g, "_")
-      .replace(/_+/g, "_");
+  FEATURE_IDS.forEach(id => {
+    const el = document.getElementById(id);
 
-    values[header] = Number(document.getElementById(id).value);
+    if (!el) {
+      console.error("Missing HTML element for ID:", id);
+      values.push(0);
+      return;
+    }
+
+    const num = Number(el.value);
+    values.push(num);
   });
 
-  return FEATURE_HEADERS.map(h => values[h]);
+  console.log("Input vector:", values);
+  return values;
 }
 
 
-// ======================================================
-// Run ONNX Model
-// ======================================================
+// ===============================
+// Run Model
+// ===============================
 async function runModel() {
   console.log("runModel() called");
 
   if (!session) {
     console.log("Model not loaded yet.");
-    document.getElementById('result').innerText =
-      "Model not loaded yet. Wait a moment.";
+    document.getElementById("result").innerText = "Model not loaded yet.";
     return;
   }
 
   const inputVector = collectModelInput();
-  console.log("Input vector:", inputVector);
 
   try {
-    const tensor = new ort.Tensor(
-      'float32',
-      Float32Array.from(inputVector),
-      [1, 37]
-    );
+    const tensor = new ort.Tensor("float32", Float32Array.from(inputVector), [1, 37]);
 
     const results = await session.run({ input: tensor });
 
@@ -114,13 +112,12 @@ async function runModel() {
     const LABELS = ["Dropout", "Enrolled", "Graduate"];
     const predictedLabel = LABELS[predictedClass] || "Unknown";
 
-    document.getElementById('result').innerText =
+    document.getElementById("result").innerText =
       `Prediction: ${predictedClass} (${predictedLabel})`;
 
   } catch (err) {
     console.error("Error running model:", err);
-    document.getElementById('result').innerText =
-      "Error running model. Check console.";
+    document.getElementById("result").innerText = "Error running model.";
   }
 }
 
