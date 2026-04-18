@@ -67,7 +67,7 @@ function collectModelInput() {
   FEATURE_HEADERS.forEach(header => {
     const id = header
       .toLowerCase()
-      .replace(/[\s()']/g, "_")   // convert to your HTML IDs
+      .replace(/[\s()']/g, "_")
       .replace(/_+/g, "_");
 
     values[header] = Number(document.getElementById(id).value);
@@ -96,12 +96,20 @@ async function runModel() {
       [1, 37]
     );
 
-    // Correct ONNX input/output names
+    // Run model
     const results = await session.run({ input: tensor });
-    const prediction = results.output.data[0];
 
+    // ONNX output tensor
+    const outputTensor = results.output;
+    const predictedClass = outputTensor.data[0];
+
+    // Map class → label
+    const LABELS = ["Dropout", "Enrolled", "Graduate"];
+    const predictedLabel = LABELS[predictedClass] || "Unknown";
+
+    // Display result
     document.getElementById('result').innerText =
-      "Prediction: " + prediction.toFixed(4);
+      `Prediction: ${predictedClass} (${predictedLabel})`;
 
   } catch (err) {
     console.error("Error running model:", err);
