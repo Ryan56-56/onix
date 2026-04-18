@@ -1,6 +1,8 @@
-// ===============================
-// Explicit Feature → HTML ID Mapping
-// ===============================
+console.log("Attempting to load model...");
+
+let session = null;
+
+// List of all 36 input feature IDs (NO TARGET)
 const FEATURE_IDS = [
   "marital_status",
   "application_mode",
@@ -40,99 +42,88 @@ const FEATURE_IDS = [
   "gdp"
 ];
 
-
-// ===============================
-// Load ONNX Model
-// ===============================
-let session = null;
-
+// Load ONNX model
 async function loadModel() {
-  console.log("Attempting to load model...");
   try {
-    session = await ort.InferenceSession.create("./model.onnx");
+    session = await ort.InferenceSession.create("model.onnx");
     console.log("Model loaded successfully.");
-  } catch (err) {
-    console.error("Model load error:", err);
-  }
 
-  // ===============================
-  // Missing ID Diagnostic
-  // ===============================
+    checkMissingIDs();
+  } catch (err) {
+    console.error("Error loading model:", err);
+  }
+}
+
+// Check for missing HTML IDs
+function checkMissingIDs() {
   console.log("Checking for missing HTML IDs...");
+
+  let missing = [];
 
   FEATURE_IDS.forEach(id => {
     if (!document.getElementById(id)) {
+      missing.push(id);
       console.error("❌ MISSING ID IN HTML:", id);
     }
   });
 
-  console.log("ID check complete.");
+  if (missing.length === 0) {
+    console.log("ID check complete.");
+  } else {
+    console.warn("Missing IDs found:", missing);
+  }
 }
 
-// Load model AFTER the page loads
-window.onload = loadModel;
-
-
-
-// ===============================
-// Collect Inputs
-// ===============================
+// Collect input values from HTML
 function collectModelInput() {
-  const values = [];
+  let values = [];
 
   FEATURE_IDS.forEach(id => {
-    const el = document.getElementById(id);
+    let el = document.getElementById(id);
+    let v = parseFloat(el.value);
 
-    if (!el) {
-      console.error("❌ ERROR: Missing HTML element for ID:", id);
-      values.push(0);
-      return;
-    }
+    if (isNaN(v)) v = 0;
 
-    const num = Number(el.value);
-    values.push(num);
+    values.push(v);
   });
 
-  console.log("Input vector:", values);
   return values;
 }
 
-
-// ===============================
-// Run Model
-// ===============================
+// Run model prediction
 async function runModel() {
-  console.log("runModel() called");
-
   if (!session) {
-    console.log("Model not loaded yet.");
-    document.getElementById("result").innerText = "Model not loaded yet.";
+    console.error("Model not loaded yet.");
     return;
   }
 
+  console.log("runModel() called");
+
   const inputVector = collectModelInput();
+  console.log("Input vector:", inputVector);
 
   try {
-    const tensor = new ort.Tensor("float32", Float32Array.from(inputVector), [1, 37]);
+    // AUTO‑SHAPE FIX — this prevents the 37 vs 36 error
+    const tensor = new ort.Tensor(
+      "float32",
+      Float32Array.from(inputVector),
+      [1, inputVector.length]
+    );
 
-    const results = await session.run({ input: tensor });
+    const feeds = { input: tensor };
+    const results = await session.run(feeds);
 
-    console.log("Output keys:", Object.keys(results));
+    const outputName = session.outputNames[0];
+    const prediction = results[outputName].data[0];
 
-    const outputName = Object.keys(results)[0];
-    const outputTensor = results[outputName];
+    console.log("Prediction:", prediction);
 
-    const predictedClass = outputTensor.data[0];
-
-    const LABELS = ["Dropout", "Enrolled", "Graduate"];
-    const predictedLabel = LABELS[predictedClass] || "Unknown";
-
-    document.getElementById("result").innerText =
-      `Prediction: ${predictedClass} (${predictedLabel})`;
+    document.getElementById("result").innerText = prediction.toFixed(4);
 
   } catch (err) {
     console.error("Error running model:", err);
-    document.getElementById("result").innerText = "Error running model.";
   }
 }
 
+// Load model AFTER page loads
+window.onload = loadModel;
