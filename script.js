@@ -1,4 +1,4 @@
-console.log("Attempting to load model...");
+print("Attempting to load model...");
 
 let session = null;
 
@@ -46,31 +46,31 @@ const FEATURE_IDS = [
 async function loadModel() {
   try {
     session = await ort.InferenceSession.create("model.onnx");
-    console.log("Model loaded successfully.");
+    print("Model loaded successfully.");
 
     checkMissingIDs();
   } catch (err) {
-    console.error("Error loading model:", err);
+    print("Error loading model: " + err);
   }
 }
 
 // Check for missing HTML IDs
 function checkMissingIDs() {
-  console.log("Checking for missing HTML IDs...");
+  print("Checking for missing HTML IDs...");
 
   let missing = [];
 
   FEATURE_IDS.forEach(id => {
     if (!document.getElementById(id)) {
       missing.push(id);
-      console.error("❌ MISSING ID IN HTML:", id);
+      print("❌ MISSING ID IN HTML: " + id);
     }
   });
 
   if (missing.length === 0) {
-    console.log("ID check complete.");
+    print("ID check complete.");
   } else {
-    console.warn("Missing IDs found:", missing);
+    print("Missing IDs found: " + missing.join(", "));
   }
 }
 
@@ -93,17 +93,16 @@ function collectModelInput() {
 // Run model prediction
 async function runModel() {
   if (!session) {
-    console.error("Model not loaded yet.");
+    print("Model not loaded yet.");
     return;
   }
 
-  console.log("runModel() called");
+  print("runModel() called");
 
   const inputVector = collectModelInput();
-  console.log("Input vector:", inputVector);
+  print("Input vector: " + JSON.stringify(inputVector));
 
   try {
-    // AUTO‑SHAPE FIX — this prevents the 37 vs 36 error
     const tensor = new ort.Tensor(
       "float32",
       Float32Array.from(inputVector),
@@ -116,14 +115,15 @@ async function runModel() {
     const outputName = session.outputNames[0];
     const prediction = results[outputName].data[0];
 
-    console.log("Prediction:", prediction);
+    print("Prediction: " + prediction);
 
     document.getElementById("result").innerText = prediction.toFixed(4);
 
   } catch (err) {
-    console.error("Error running model:", err);
+    print("Error running model: " + err);
   }
 }
 
 // Load model AFTER page loads
 window.onload = loadModel;
+
