@@ -1,3 +1,8 @@
+function print(msg) {
+  const log = document.getElementById("log");
+  log.innerText += msg + "\n";
+}
+
 print("Attempting to load model...");
 
 let session = null;
@@ -41,6 +46,13 @@ const FEATURE_IDS = [
   "inflation_rate",
   "gdp"
 ];
+
+// Label mapping
+function mapPredictionToLabel(value) {
+  if (value < 0.5) return "Dropout";
+  if (value < 1.5) return "Enrolled";
+  return "Graduate";
+}
 
 // Load ONNX model
 async function loadModel() {
@@ -117,7 +129,14 @@ async function runModel() {
 
     print("Prediction: " + prediction);
 
+    // Show numeric prediction
     document.getElementById("result").innerText = prediction.toFixed(4);
+
+    // Convert to label
+    const label = mapPredictionToLabel(prediction);
+    document.getElementById("result_label").innerText = label;
+
+    print("Predicted Label: " + label);
 
   } catch (err) {
     print("Error running model: " + err);
