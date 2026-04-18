@@ -6,7 +6,7 @@ let session = null;
 async function loadModel() {
   try {
     // Make sure DLnet_Data.onnx is in the same folder as index.html and index.js
-    session = await ort.InferenceSession.create("./DLnet2026_WineData.onnx");
+    session = await ort.InferenceSession.create("./model.onnx?v=1");
     console.log("Model loaded successfully.");
   } catch (err) {
     console.error("Failed to load ONNX model:", err);
