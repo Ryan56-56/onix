@@ -24,6 +24,10 @@
     <p>Enter student features below:</p>
 
     <table>
+<tr>
+  <td>Target (ignore)</td>
+  <td><input id="target" value="0"></td>
+</tr>
 
       <tr><td>Marital status</td><td><input id="marital_status"></td></tr>
       <tr><td>Application mode</td><td><input id="application_mode"></td></tr>
