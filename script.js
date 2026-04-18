@@ -69,7 +69,9 @@ async function loadModel() {
   console.log("ID check complete.");
 }
 
-loadModel();
+// Load model AFTER the page loads
+window.onload = loadModel;
+
 
 
 // ===============================
