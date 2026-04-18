@@ -125,9 +125,26 @@ async function runModel() {
     const results = await session.run(feeds);
 
     const outputName = session.outputNames[0];
-    const prediction = results[outputName].data[0];
 
-    print("Prediction: " + prediction);
+    // FIX: ensure prediction is a number
+    let prediction = Number(results[outputName].data[0]);
+
+    print("Prediction (raw): " + prediction);
+
+    // Show numeric prediction
+    document.getElementById("result").innerText = prediction.toFixed(4);
+
+    // Convert to label
+    const label = mapPredictionToLabel(prediction);
+    document.getElementById("result_label").innerText = label;
+
+    print("Predicted Label: " + label);
+
+  } catch (err) {
+    print("Error running model: " + err);
+  }
+}
+
 
     // Show numeric prediction
     document.getElementById("result").innerText = prediction.toFixed(4);
