@@ -56,6 +56,8 @@ const FEATURE_IDS = [
   "unemployment_rate",
   "inflation_rate",
   "gdp"
+  // ⭐ Fake target added here
+  "target"
 ];
 
 
