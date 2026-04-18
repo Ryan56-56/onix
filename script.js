@@ -1,36 +1,4 @@
 // ===============================
-// Load ONNX Model
-// ===============================
-let session = null;
-
-async function loadModel() {
-  console.log("Attempting to load model...");
-  try {
-    session = await ort.InferenceSession.create("./model.onnx");
-    console.log("Model loaded successfully.");
-  } catch (err) {
-    console.error("Model load error:", err);
-  }
-
-  // ===============================
-  // ⭐ NEW: Missing ID Diagnostic
-  // Runs AFTER model load
-  // ===============================
-  console.log("Checking for missing HTML IDs...");
-
-  FEATURE_IDS.forEach(id => {
-    if (!document.getElementById(id)) {
-      console.error("❌ MISSING ID IN HTML:", id);
-    }
-  });
-
-  console.log("ID check complete.");
-}
-
-loadModel();
-
-
-// ===============================
 // Explicit Feature → HTML ID Mapping
 // ===============================
 const FEATURE_IDS = [
@@ -71,6 +39,37 @@ const FEATURE_IDS = [
   "inflation_rate",
   "gdp"
 ];
+
+
+// ===============================
+// Load ONNX Model
+// ===============================
+let session = null;
+
+async function loadModel() {
+  console.log("Attempting to load model...");
+  try {
+    session = await ort.InferenceSession.create("./model.onnx");
+    console.log("Model loaded successfully.");
+  } catch (err) {
+    console.error("Model load error:", err);
+  }
+
+  // ===============================
+  // Missing ID Diagnostic
+  // ===============================
+  console.log("Checking for missing HTML IDs...");
+
+  FEATURE_IDS.forEach(id => {
+    if (!document.getElementById(id)) {
+      console.error("❌ MISSING ID IN HTML:", id);
+    }
+  });
+
+  console.log("ID check complete.");
+}
+
+loadModel();
 
 
 // ===============================
