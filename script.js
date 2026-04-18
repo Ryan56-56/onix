@@ -70,9 +70,8 @@ const FEATURE_IDS = [
   "unemployment_rate",
   "inflation_rate",
   "gdp"
-  // ❌ REMOVE THIS — it breaks your model
-  // "target"
 ];
+
 
 
 // ===============================
