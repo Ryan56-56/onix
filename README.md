@@ -7,7 +7,7 @@
   <!-- ONNX Runtime Web -->
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
 
-  <!-- Load your JavaScript file -->
+  <!-- Your JavaScript -->
   <script src="script.js" defer></script>
 
   <style>
@@ -40,45 +40,52 @@
   <h1>Student Dropout Prediction Model</h1>
 
   <div id="studentBox">
-    <p>Enter student features below (numeric-encoded as in training):</p>
+    <p>Enter student features below (numeric‑encoded exactly as used in training):</p>
 
     <table>
+
+      <!-- IDs match JS auto‑mapping (lowercase, underscores) -->
+
       <tr><td>Marital status</td><td><input id="marital_status"></td></tr>
       <tr><td>Application mode</td><td><input id="application_mode"></td></tr>
       <tr><td>Application order</td><td><input id="application_order"></td></tr>
       <tr><td>Course</td><td><input id="course"></td></tr>
-      <tr><td>Daytime/evening attendance</td><td><input id="attendance"></td></tr>
-      <tr><td>Previous qualification</td><td><input id="prev_qual"></td></tr>
-      <tr><td>Previous qualification (grade)</td><td><input id="prev_qual_grade"></td></tr>
+      <tr><td>Daytime/evening attendance</td><td><input id="daytime_evening_attendance"></td></tr>
+      <tr><td>Previous qualification</td><td><input id="previous_qualification"></td></tr>
+      <tr><td>Previous qualification (grade)</td><td><input id="previous_qualification_grade"></td></tr>
       <tr><td>Nacionality</td><td><input id="nacionality"></td></tr>
-      <tr><td>Mother's qualification</td><td><input id="mother_qual"></td></tr>
-      <tr><td>Father's qualification</td><td><input id="father_qual"></td></tr>
-      <tr><td>Mother's occupation</td><td><input id="mother_occ"></td></tr>
-      <tr><td>Father's occupation</td><td><input id="father_occ"></td></tr>
+      <tr><td>Mother's qualification</td><td><input id="mother_s_qualification"></td></tr>
+      <tr><td>Father's qualification</td><td><input id="father_s_qualification"></td></tr>
+      <tr><td>Mother's occupation</td><td><input id="mother_s_occupation"></td></tr>
+      <tr><td>Father's occupation</td><td><input id="father_s_occupation"></td></tr>
       <tr><td>Admission grade</td><td><input id="admission_grade"></td></tr>
       <tr><td>Displaced</td><td><input id="displaced"></td></tr>
-      <tr><td>Educational special needs</td><td><input id="special_needs"></td></tr>
+      <tr><td>Educational special needs</td><td><input id="educational_special_needs"></td></tr>
       <tr><td>Debtor</td><td><input id="debtor"></td></tr>
-      <tr><td>Tuition fees up to date</td><td><input id="tuition_up_to_date"></td></tr>
+      <tr><td>Tuition fees up to date</td><td><input id="tuition_fees_up_to_date"></td></tr>
       <tr><td>Gender</td><td><input id="gender"></td></tr>
-      <tr><td>Scholarship holder</td><td><input id="scholarship"></td></tr>
-      <tr><td>Age at enrollment</td><td><input id="age"></td></tr>
+      <tr><td>Scholarship holder</td><td><input id="scholarship_holder"></td></tr>
+      <tr><td>Age at enrollment</td><td><input id="age_at_enrollment"></td></tr>
       <tr><td>International</td><td><input id="international"></td></tr>
-      <tr><td>Curricular units 1st sem (credited)</td><td><input id="c1_credited"></td></tr>
-      <tr><td>Curricular units 1st sem (enrolled)</td><td><input id="c1_enrolled"></td></tr>
-      <tr><td>Curricular units 1st sem (evaluations)</td><td><input id="c1_evaluations"></td></tr>
-      <tr><td>Curricular units 1st sem (approved)</td><td><input id="c1_approved"></td></tr>
-      <tr><td>Curricular units 1st sem (grade)</td><td><input id="c1_grade"></td></tr>
-      <tr><td>Curricular units 1st sem (without evaluations)</td><td><input id="c1_without_eval"></td></tr>
-      <tr><td>Curricular units 2nd sem (credited)</td><td><input id="c2_credited"></td></tr>
-      <tr><td>Curricular units 2nd sem (enrolled)</td><td><input id="c2_enrolled"></td></tr>
-      <tr><td>Curricular units 2nd sem (evaluations)</td><td><input id="c2_evaluations"></td></tr>
-      <tr><td>Curricular units 2nd sem (approved)</td><td><input id="c2_approved"></td></tr>
-      <tr><td>Curricular units 2nd sem (grade)</td><td><input id="c2_grade"></td></tr>
-      <tr><td>Curricular units 2nd sem (without evaluations)</td><td><input id="c2_without_eval"></td></tr>
-      <tr><td>Unemployment rate</td><td><input id="unemployment"></td></tr>
-      <tr><td>Inflation rate</td><td><input id="inflation"></td></tr>
+
+      <tr><td>Curricular units 1st sem (credited)</td><td><input id="curricular_units_1st_sem_credited"></td></tr>
+      <tr><td>Curricular units 1st sem (enrolled)</td><td><input id="curricular_units_1st_sem_enrolled"></td></tr>
+      <tr><td>Curricular units 1st sem (evaluations)</td><td><input id="curricular_units_1st_sem_evaluations"></td></tr>
+      <tr><td>Curricular units 1st sem (approved)</td><td><input id="curricular_units_1st_sem_approved"></td></tr>
+      <tr><td>Curricular units 1st sem (grade)</td><td><input id="curricular_units_1st_sem_grade"></td></tr>
+      <tr><td>Curricular units 1st sem (without evaluations)</td><td><input id="curricular_units_1st_sem_without_evaluations"></td></tr>
+
+      <tr><td>Curricular units 2nd sem (credited)</td><td><input id="curricular_units_2nd_sem_credited"></td></tr>
+      <tr><td>Curricular units 2nd sem (enrolled)</td><td><input id="curricular_units_2nd_sem_enrolled"></td></tr>
+      <tr><td>Curricular units 2nd sem (evaluations)</td><td><input id="curricular_units_2nd_sem_evaluations"></td></tr>
+      <tr><td>Curricular units 2nd sem (approved)</td><td><input id="curricular_units_2nd_sem_approved"></td></tr>
+      <tr><td>Curricular units 2nd sem (grade)</td><td><input id="curricular_units_2nd_sem_grade"></td></tr>
+      <tr><td>Curricular units 2nd sem (without evaluations)</td><td><input id="curricular_units_2nd_sem_without_evaluations"></td></tr>
+
+      <tr><td>Unemployment rate</td><td><input id="unemployment_rate"></td></tr>
+      <tr><td>Inflation rate</td><td><input id="inflation_rate"></td></tr>
       <tr><td>GDP</td><td><input id="gdp"></td></tr>
+
     </table>
 
     <br>
