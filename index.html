@@ -1,81 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Dropout Prediction</title>
-
+  <title>Student Success Predictor</title>
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
-  <script src="script.js" defer></script>
 
   <style>
-    body { font-family: Arial; margin: 20px; }
-    table td { padding: 4px 10px; }
-    input { width: 140px; }
-    #studentBox { border: 2px solid #444; padding: 20px; margin-top: 20px; }
-    #result { font-size: 20px; color: blue; margin-top: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    #log {
+      margin-top: 20px;
+      padding: 10px;
+      background: #111;
+      color: #0f0;
+      font-family: monospace;
+      white-space: pre-line;
+      height: 200px;
+      overflow-y: auto;
+      border-radius: 5px;
+    }
+
+    .input-group {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 
 <body>
 
-  <h1>Student Dropout Prediction Model</h1>
+  <h1>Student Success Predictor</h1>
 
-  <div id="studentBox">
-    <p>Enter student features below:</p>
+  <h3>Enter all model inputs:</h3>
 
-    <table>
-      <tr><td>Marital status</td><td><input id="marital_status"></td></tr>
-      <tr><td>Application mode</td><td><input id="application_mode"></td></tr>
-      <tr><td>Application order</td><td><input id="application_order"></td></tr>
-      <tr><td>Course</td><td><input id="course"></td></tr>
-      <tr><td>Daytime/evening attendance</td><td><input id="daytime_evening_attendance"></td></tr>
-      <tr><td>Previous qualification</td><td><input id="previous_qualification"></td></tr>
-      <tr><td>Previous qualification (grade)</td><td><input id="previous_qualification_grade"></td></tr>
-      <tr><td>Nacionality</td><td><input id="nacionality"></td></tr>
-      <tr><td>Mother's qualification</td><td><input id="mother_s_qualification"></td></tr>
-      <tr><td>Father's qualification</td><td><input id="father_s_qualification"></td></tr>
-      <tr><td>Mother's occupation</td><td><input id="mother_s_occupation"></td></tr>
-      <tr><td>Father's occupation</td><td><input id="father_s_occupation"></td></tr>
-      <tr><td>Admission grade</td><td><input id="admission_grade"></td></tr>
-      <tr><td>Displaced</td><td><input id="displaced"></td></tr>
-      <tr><td>Educational special needs</td><td><input id="educational_special_needs"></td></tr>
-      <tr><td>Debtor</td><td><input id="debtor"></td></tr>
-      <tr><td>Tuition fees up to date</td><td><input id="tuition_fees_up_to_date"></td></tr>
-      <tr><td>Gender</td><td><input id="gender"></td></tr>
-      <tr><td>Scholarship holder</td><td><input id="scholarship_holder"></td></tr>
-      <tr><td>Age at enrollment</td><td><input id="age_at_enrollment"></td></tr>
-      <tr><td>International</td><td><input id="international"></td></tr>
-
-      <tr><td>Curricular units 1st sem (credited)</td><td><input id="curricular_units_1st_sem_credited"></td></tr>
-      <tr><td>Curricular units 1st sem (enrolled)</td><td><input id="curricular_units_1st_sem_enrolled"></td></tr>
-      <tr><td>Curricular units 1st sem (evaluations)</td><td><input id="curricular_units_1st_sem_evaluations"></td></tr>
-      <tr><td>Curricular units 1st sem (approved)</td><td><input id="curricular_units_1st_sem_approved"></td></tr>
-      <tr><td>Curricular units 1st sem (grade)</td><td><input id="curricular_units_1st_sem_grade"></td></tr>
-      <tr><td>Curricular units 1st sem (without evaluations)</td><td><input id="curricular_units_1st_sem_without_evaluations"></td></tr>
-
-      <tr><td>Curricular units 2nd sem (credited)</td><td><input id="curricular_units_2nd_sem_credited"></td></tr>
-      <tr><td>Curricular units 2nd sem (enrolled)</td><td><input id="curricular_units_2nd_sem_enrolled"></td></tr>
-      <tr><td>Curricular units 2nd sem (evaluations)</td><td><input id="curricular_units_2nd_sem_evaluations"></td></tr>
-      <tr><td>Curricular units 2nd sem (approved)</td><td><input id="curricular_units_2nd_sem_approved"></td></tr>
-      <tr><td>Curricular units 2nd sem (grade)</td><td><input id="curricular_units_2nd_sem_grade"></td></tr>
-      <tr><td>Curricular units 2nd sem (without evaluations)</td><td><input id="curricular_units_2nd_sem_without_evaluations"></td></tr>
-
-      <tr><td>Unemployment rate</td><td><input id="unemployment_rate"></td></tr>
-      <tr><td>Inflation rate</td><td><input id="inflation_rate"></td></tr>
-      <tr><td>GDP</td><td><input id="gdp"></td></tr>
-
-    </table>
-
-    <br>
-    <button onclick="runModel()" style="background:yellow; padding:10px;">Run Student Model</button>
-
-    <h3>Prediction Output:</h3>
-    <div id="result"></div>
+  <div id="inputs">
+    <!-- All 36 input fields -->
+    <div class="input-group"><label>Marital Status</label><input id="marital_status" type="number"></div>
+    <div class="input-group"><label>Application Mode</label><input id="application_mode" type="number"></div>
+    <div class="input-group"><label>Application Order</label><input id="application_order" type="number"></div>
+    <div class="input-group"><label>Course</label><input id="course" type="number"></div>
+    <div class="input-group"><label>Daytime/Evening Attendance</label><input id="daytime_evening_attendance" type="number"></div>
+    <div class="input-group"><label>Previous Qualification</label><input id="previous_qualification" type="number"></div>
+    <div class="input-group"><label>Previous Qualification Grade</label><input id="previous_qualification_grade" type="number"></div>
+    <div class="input-group"><label>Nacionality</label><input id="nacionality" type="number"></div>
+    <div class="input-group"><label>Mother's Qualification</label><input id="mother_s_qualification" type="number"></div>
+    <div class="input-group"><label>Father's Qualification</label><input id="father_s_qualification" type="number"></div>
+    <div class="input-group"><label>Mother's Occupation</label><input id="mother_s_occupation" type="number"></div>
+    <div class="input-group"><label>Father's Occupation</label><input id="father_s_occupation" type="number"></div>
+    <div class="input-group"><label>Admission Grade</label><input id="admission_grade" type="number"></div>
+    <div class="input-group"><label>Displaced</label><input id="displaced" type="number"></div>
+    <div class="input-group"><label>Educational Special Needs</label><input id="educational_special_needs" type="number"></div>
+    <div class="input-group"><label>Debtor</label><input id="debtor" type="number"></div>
+    <div class="input-group"><label>Tuition Fees Up To Date</label><input id="tuition_fees_up_to_date" type="number"></div>
+    <div class="input-group"><label>Gender</label><input id="gender" type="number"></div>
+    <div class="input-group"><label>Scholarship Holder</label><input id="scholarship_holder" type="number"></div>
+    <div class="input-group"><label>Age at Enrollment</label><input id="age_at_enrollment" type="number"></div>
+    <div class="input-group"><label>International</label><input id="international" type="number"></div>
+    <div class="input-group"><label>1st Sem Credited</label><input id="curricular_units_1st_sem_credited" type="number"></div>
+    <div class="input-group"><label>1st Sem Enrolled</label><input id="curricular_units_1st_sem_enrolled" type="number"></div>
+    <div class="input-group"><label>1st Sem Evaluations</label><input id="curricular_units_1st_sem_evaluations" type="number"></div>
+    <div class="input-group"><label>1st Sem Approved</label><input id="curricular_units_1st_sem_approved" type="number"></div>
+    <div class="input-group"><label>1st Sem Grade</label><input id="curricular_units_1st_sem_grade" type="number"></div>
+    <div class="input-group"><label>1st Sem Without Evaluations</label><input id="curricular_units_1st_sem_without_evaluations" type="number"></div>
+    <div class="input-group"><label>2nd Sem Credited</label><input id="curricular_units_2nd_sem_credited" type="number"></div>
+    <div class="input-group"><label>2nd Sem Enrolled</label><input id="curricular_units_2nd_sem_enrolled" type="number"></div>
+    <div class="input-group"><label>2nd Sem Evaluations</label><input id="curricular_units_2nd_sem_evaluations" type="number"></div>
+    <div class="input-group"><label>2nd Sem Approved</label><input id="curricular_units_2nd_sem_approved" type="number"></div>
+    <div class="input-group"><label>2nd Sem Grade</label><input id="curricular_units_2nd_sem_grade" type="number"></div>
+    <div class="input-group"><label>2nd Sem Without Evaluations</label><input id="curricular_units_2nd_sem_without_evaluations" type="number"></div>
+    <div class="input-group"><label>Unemployment Rate</label><input id="unemployment_rate" type="number"></div>
+    <div class="input-group"><label>Inflation Rate</label><input id="inflation_rate" type="number"></div>
+    <div class="input-group"><label>GDP</label><input id="gdp" type="number"></div>
   </div>
 
+  <button onclick="runModel()">Predict</button>
+
+  <h3>Prediction:</h3>
+  <div id="result" style="font-size: 20px; font-weight: bold;"></div>
+
+  <h3>Log Output:</h3>
+  <div id="log"></div>
+
+  <script src="script.js"></script>
 </body>
 </html>
 
-
-</html>
 
