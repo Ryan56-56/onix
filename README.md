@@ -4,34 +4,15 @@
   <meta charset="UTF-8">
   <title>Student Dropout Prediction</title>
 
-  <!-- ONNX Runtime Web -->
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
-
-  <!-- Your JavaScript -->
   <script src="script.js" defer></script>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    table td {
-      padding: 4px 10px;
-      vertical-align: middle;
-    }
-    input {
-      width: 140px;
-    }
-    #studentBox {
-      border: 2px solid #444;
-      padding: 20px;
-      margin-top: 20px;
-    }
-    #result {
-      font-size: 20px;
-      color: blue;
-      margin-top: 10px;
-    }
+    body { font-family: Arial; margin: 20px; }
+    table td { padding: 4px 10px; }
+    input { width: 140px; }
+    #studentBox { border: 2px solid #444; padding: 20px; margin-top: 20px; }
+    #result { font-size: 20px; color: blue; margin-top: 10px; }
   </style>
 </head>
 
@@ -40,11 +21,9 @@
   <h1>Student Dropout Prediction Model</h1>
 
   <div id="studentBox">
-    <p>Enter student features below (numeric‑encoded exactly as used in training):</p>
+    <p>Enter student features below:</p>
 
     <table>
-
-      <!-- IDs match JS auto‑mapping (lowercase, underscores) -->
 
       <tr><td>Marital status</td><td><input id="marital_status"></td></tr>
       <tr><td>Application mode</td><td><input id="application_mode"></td></tr>
@@ -89,7 +68,7 @@
     </table>
 
     <br>
-    <button style="background:yellow; padding:10px;" onclick="runModel()">Run Student Model</button>
+    <button onclick="runModel()" style="background:yellow; padding:10px;">Run Student Model</button>
 
     <h3>Prediction Output:</h3>
     <div id="result"></div>
