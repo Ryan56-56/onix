@@ -4,11 +4,13 @@
 let session = null;
 
 async function loadModel() {
+  console.log("Attempting to load model...");
+
   try {
-    session = await ort.InferenceSession.create("./model.onnx?v=1");
+    session = await ort.InferenceSession.create("./model.onnx");
     console.log("Model loaded successfully.");
   } catch (err) {
-    console.error("Failed to load ONNX model:", err);
+    console.error("Model load error:", err);
   }
 }
 
@@ -81,33 +83,37 @@ function collectModelInput() {
 // Run ONNX Model
 // ======================================================
 async function runModel() {
+  console.log("runModel() called");
+
   if (!session) {
-    alert("Model not loaded yet. Wait a moment and try again.");
+    console.log("Model not loaded yet.");
+    document.getElementById('result').innerText =
+      "Model not loaded yet. Wait a moment.";
     return;
   }
 
   const inputVector = collectModelInput();
+  console.log("Input vector:", inputVector);
 
   try {
-    // Build tensor for ONNX model
     const tensor = new ort.Tensor(
       'float32',
       Float32Array.from(inputVector),
       [1, 37]
     );
 
-    // Run model
     const results = await session.run({ input: tensor });
 
-    // ONNX output tensor
-    const outputTensor = results.output;
+    console.log("Output keys:", Object.keys(results));
+
+    const outputName = Object.keys(results)[0];
+    const outputTensor = results[outputName];
+
     const predictedClass = outputTensor.data[0];
 
-    // Map class → label
     const LABELS = ["Dropout", "Enrolled", "Graduate"];
     const predictedLabel = LABELS[predictedClass] || "Unknown";
 
-    // Display result
     document.getElementById('result').innerText =
       `Prediction: ${predictedClass} (${predictedLabel})`;
 
