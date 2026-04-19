@@ -59,7 +59,6 @@ async function loadModel() {
   try {
     session = await ort.InferenceSession.create("model.onnx");
     print("Model loaded successfully.");
-
     checkMissingIDs();
   } catch (err) {
     print("Error loading model: " + err);
@@ -69,7 +68,6 @@ async function loadModel() {
 // Check for missing HTML IDs
 function checkMissingIDs() {
   print("Checking for missing HTML IDs...");
-
   let missing = [];
 
   FEATURE_IDS.forEach(id => {
@@ -93,9 +91,7 @@ function collectModelInput() {
   FEATURE_IDS.forEach(id => {
     let el = document.getElementById(id);
     let v = parseFloat(el.value);
-
     if (isNaN(v)) v = 0;
-
     values.push(v);
   });
 
@@ -121,14 +117,12 @@ async function runModel() {
       [1, inputVector.length]
     );
 
-    const feeds = { input: tensor };
-    const results = await session.run(feeds);
-
+    const results = await session.run({ input: tensor });
     const outputName = session.outputNames[0];
-    let raw = results[outputName].data;
+    const raw = results[outputName].data;
 
-    // UNIVERSAL FIX: extract number from ANY shape
-    let prediction = Number(
+    // Extract number safely
+    const prediction = Number(
       Array.isArray(raw) ? raw[0] :
       raw?.[0] ??
       raw
@@ -136,44 +130,9 @@ async function runModel() {
 
     print("Raw prediction value: " + prediction);
 
-    // Show numeric prediction (safe)
-    document.getElementById("result").innerText = isNaN(prediction)
-      ? "N/A"
-      : prediction.toFixed(4);
-
-    // Convert to label
-    const label = mapPredictionToLabel(prediction);
-    document.getElementById("result_label").innerText = label;
-
-    print("Predicted Label: " + label);
-
-  } catch (err) {
-    print("Error running model: " + err);
-  }
-}
-
-    // FIX: ensure prediction is a number
-    let prediction = Number(results[outputName].data[0]);
-
-    print("Prediction (raw): " + prediction);
-
     // Show numeric prediction
-    document.getElementById("result").innerText = prediction.toFixed(4);
-
-    // Convert to label
-    const label = mapPredictionToLabel(prediction);
-    document.getElementById("result_label").innerText = label;
-
-    print("Predicted Label: " + label);
-
-  } catch (err) {
-    print("Error running model: " + err);
-  }
-}
-
-
-    // Show numeric prediction
-    document.getElementById("result").innerText = prediction.toFixed(4);
+    document.getElementById("result").innerText =
+      isNaN(prediction) ? "N/A" : prediction.toFixed(4);
 
     // Convert to label
     const label = mapPredictionToLabel(prediction);
@@ -188,4 +147,5 @@ async function runModel() {
 
 // Load model AFTER page loads
 window.onload = loadModel;
+
 
