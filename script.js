@@ -118,6 +118,9 @@ async function runModel() {
     );
 
     const results = await session.run({ input: tensor });
+    print("ONNX output keys: " + JSON.stringify(Object.keys(results)));
+print("Session outputNames: " + JSON.stringify(session.outputNames));
+    
     const outputName = session.outputNames[0];
     const raw = results[outputName].data;
 
